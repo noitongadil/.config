@@ -68,69 +68,69 @@ local map = function(mode, lhs, fn, desc)
 	vim.keymap.set(mode, lhs, fn, { desc = desc, silent = true })
 end
 
-map("n", "<leader>D", function()
-	require("fzf-lua").lsp_typedefs()
-end, "type def")
-
-map("n", "<leader>ds", function()
-	require("fzf-lua").lsp_document_symbols()
-end, "doc symbols")
-
-map("n", "<leader>ws", function()
-	require("fzf-lua").lsp_live_workspace_symbols()
-end, "workspace symbols")
-
-map("n", "<leader>ff", function()
-	require("fzf-lua").files()
-end, "find files in project dir")
-
-map("n", "<leader>fg", function()
-	require("fzf-lua").live_grep()
-end, "grep project dir")
-
-map("n", "<leader>fc", function()
-	require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
-end, "find in neovim config")
-
-map("n", "<leader>fh", function()
-	require("fzf-lua").helptags()
-end, "find help")
-
-map("n", "<leader>fk", function()
-	require("fzf-lua").keymaps()
-end, "find keymaps")
-
-map("n", "<leader>fb", function()
-	require("fzf-lua").builtin()
-end, "find builtin FZF")
-
-map("n", "<leader>fw", function()
-	require("fzf-lua").grep_cword()
-end, "find current word")
-
-map("n", "<leader>fW", function()
-	require("fzf-lua").grep_cWORD()
-end, "find current WORD")
-
-map("n", "<leader>fd", function()
-	require("fzf-lua").diagnostics_document()
-end, "find diagnostics")
-
-map("n", "<leader>fr", function()
-	require("fzf-lua").resume()
-end, "resume last picker")
-
-map("n", "<leader>fo", function()
-	require("fzf-lua").oldfiles()
-end, "find old files")
-
-map("n", "<leader><leader>", function()
-	require("fzf-lua").buffers()
-end, "find existing buffers")
-
-map("n", "<leader>/", function()
-	require("fzf-lua").lgrep_curbuf()
-end, "live grep current buffer")
+-- map("n", "<leader>D", function()
+-- 	require("fzf-lua").lsp_typedefs()
+-- end, "type def")
+--
+-- map("n", "<leader>ds", function()
+-- 	require("fzf-lua").lsp_document_symbols()
+-- end, "doc symbols")
+--
+-- map("n", "<leader>ws", function()
+-- 	require("fzf-lua").lsp_live_workspace_symbols()
+-- end, "workspace symbols")
+--
+-- map("n", "<leader>ff", function()
+-- 	require("fzf-lua").files()
+-- end, "find files in project dir")
+--
+-- map("n", "<leader>fg", function()
+-- 	require("fzf-lua").live_grep()
+-- end, "grep project dir")
+--
+-- map("n", "<leader>fc", function()
+-- 	require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
+-- end, "find in neovim config")
+--
+-- map("n", "<leader>fh", function()
+-- 	require("fzf-lua").helptags()
+-- end, "find help")
+--
+-- map("n", "<leader>fk", function()
+-- 	require("fzf-lua").keymaps()
+-- end, "find keymaps")
+--
+-- map("n", "<leader>fb", function()
+-- 	require("fzf-lua").builtin()
+-- end, "find builtin FZF")
+--
+-- map("n", "<leader>fw", function()
+-- 	require("fzf-lua").grep_cword()
+-- end, "find current word")
+--
+-- map("n", "<leader>fW", function()
+-- 	require("fzf-lua").grep_cWORD()
+-- end, "find current WORD")
+--
+-- map("n", "<leader>fd", function()
+-- 	require("fzf-lua").diagnostics_document()
+-- end, "find diagnostics")
+--
+-- map("n", "<leader>fr", function()
+-- 	require("fzf-lua").resume()
+-- end, "resume last picker")
+--
+-- map("n", "<leader>fo", function()
+-- 	require("fzf-lua").oldfiles()
+-- end, "find old files")
+--
+-- map("n", "<leader><leader>", function()
+-- 	require("fzf-lua").buffers()
+-- end, "find existing buffers")
+--
+-- map("n", "<leader>/", function()
+-- 	require("fzf-lua").lgrep_curbuf()
+-- end, "live grep current buffer")
 
 vim.keymap.set("n", "<leader>zz", function()
 	require("zen-mode").setup({
