@@ -1,19 +1,14 @@
 vim.pack.add({
 	{ src = "https://github.com/rose-pine/neovim" },
+	{ src = "https://github.com/vague2k/vague.nvim" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
-	{ src = "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim" },
-	{ src = "https://github.com/mfussenegger/nvim-dap" },
-	{ src = "https://github.com/rcarriga/nvim-dap-ui" },
-	{ src = "https://github.com/nvim-neotest/nvim-nio" },
 	{ src = "https://github.com/Saghen/blink.cmp" },
-	{ src = "https://github.com/ibhagwan/fzf-lua" },
-	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
-	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/folke/which-key.nvim" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
+	-- { src = "https://github.com/ibhagwan/fzf-lua" },
+	-- { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+	-- { src = "https://github.com/lewis6991/gitsigns.nvim" },
+	-- { src = "https://github.com/folke/which-key.nvim" },
+	-- { src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/folke/zen-mode.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/jiaoshijie/undotree" },
@@ -65,7 +60,38 @@ require("rose-pine").setup({
 		FloatBorder = { bg = "#000000" },
 	},
 })
-ColorMyPencils()
+
+require("vague").setup({
+	colors = {
+		bg = "#000000",
+		inactiveBg = "#000000",
+		fg = "#cdcdcd",
+		floatBorder = "#000000",
+		line = "#252530",
+		comment = "#606079",
+		builtin = "#b4d4cf",
+		func = "#c48282",
+		string = "#e8b589",
+		number = "#e0a363",
+		property = "#c3c3d5",
+		constant = "#aeaed1",
+		parameter = "#bb9dbd",
+		visual = "#333738",
+		error = "#d8647e",
+		warning = "#f3be7c",
+		hint = "#7e98e8",
+		operator = "#90a0b5",
+		keyword = "#6e94b2",
+		type = "#9bb4bc",
+		search = "#405065",
+		plus = "#7fa563",
+		delta = "#f3be7c",
+	},
+})
+
+ColorMyPencils("vague")
+
+vim.cmd([[set completeopt+=menuone,noselect,popup]])
 
 require("conform").setup({
 	formatters_by_ft = {
@@ -89,34 +115,25 @@ require("conform").setup({
 	},
 })
 
-require("which-key").setup({
-	win = {
-		border = "rounded",
-	},
-})
+-- require("which-key").setup({
+-- 	win = {
+-- 		border = "rounded",
+-- 	},
+-- })
 
-require("gitsigns").setup({
-	signcolumn = true,
-	signs = {
-		add = { text = "+" },
-		change = { text = "~" },
-		delete = { text = "_" },
-		topdelete = { text = "‾" },
-		changedelete = { text = "~" },
-	},
-})
+-- require("gitsigns").setup({
+-- 	signcolumn = true,
+-- 	signs = {
+-- 		add = { text = "+" },
+-- 		change = { text = "~" },
+-- 		delete = { text = "_" },
+-- 		topdelete = { text = "‾" },
+-- 		changedelete = { text = "~" },
+-- 	},
+-- })
 
 require("mason").setup({
 	ui = { border = "rounded" },
-})
-
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-	ensure_installed = {
-		"lua_ls",
-		"stylua",
-		"clangd",
-	},
 })
 
 vim.lsp.config("lua_ls", {
@@ -156,9 +173,9 @@ require("blink.cmp").setup({
 	fuzzy = { implementation = "prefer_rust_with_warning" },
 })
 
-require("fzf-lua").setup({
-	winopts = { backdrop = 85 },
-})
+-- require("fzf-lua").setup({
+-- 	winopts = { backdrop = 85 },
+-- })
 
 function Treesitter_setup()
 	local configs = require("nvim-treesitter.configs")

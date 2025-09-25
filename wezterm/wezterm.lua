@@ -4,7 +4,8 @@ local config = wezterm.config_builder()
 
 config.font = wezterm.font("FiraMono Nerd Font")
 -- config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
-config.font_size = 28
+config.font_size = 28.6
+config.line_height = 1
 
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
@@ -47,6 +48,16 @@ config.colors = {
 		"#e0def4", -- bright white
 	},
 }
+
+config.keys = {
+	{
+		key = "n",
+		mods = "SHIFT|CTRL",
+		action = wezterm.action.ToggleFullScreen,
+	},
+}
+
+config.native_macos_fullscreen_mode = true
 
 -- rose = "#ebbcba",
 -- gold = "#e0c797",
