@@ -1,6 +1,3 @@
-local augroup = vim.api.nvim_create_augroup
-local MyGroup = augroup("MyGroup", {})
-
 vim.keymap.set("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
 
 vim.keymap.set("n", "gl", function()
@@ -28,8 +25,19 @@ end)
 local autocmd = vim.api.nvim_create_autocmd
 
 autocmd("LspAttach", {
-	group = MyGroup,
-	callback = function()
+	group = vim.api.nvim_create_augroup("my.lsp", {}),
+	callback = function(args)
+		local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+		if client:supports_method("textDocument/completion") then
+			local chars = {}
+			for i = 32, 126 do
+				table.insert(chars, string.char(i))
+			end
+			client.server_capabilities.completionProvider.triggerCharacters = chars
+
+			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+		end
+
 		vim.keymap.set("n", "gd", function()
 			vim.lsp.buf.definition()
 		end, { desc = "goto defintion" })

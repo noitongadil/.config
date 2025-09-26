@@ -3,7 +3,7 @@ vim.pack.add({
 	{ src = "https://github.com/vague2k/vague.nvim" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/Saghen/blink.cmp" },
+	-- { src = "https://github.com/Saghen/blink.cmp" },
 	-- { src = "https://github.com/ibhagwan/fzf-lua" },
 	-- { src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	-- { src = "https://github.com/lewis6991/gitsigns.nvim" },
@@ -136,42 +136,53 @@ require("mason").setup({
 	ui = { border = "rounded" },
 })
 
-vim.lsp.config("lua_ls", {
-	settings = {
-		Lua = {
-			runtime = {
-				version = "LuaJIT",
-			},
-			diagnostics = {
-				globals = {
-					"vim",
-					"require",
-				},
-			},
-			workspace = {
-				library = vim.api.nvim_get_runtime_file("", true),
-			},
-			telemetry = {
-				enable = false,
-			},
-		},
-	},
+vim.lsp.enable({
+	"lua_ls",
+	"clangd",
+	"bash-language-server",
+	"pyright",
+	"stylua",
+	"cmake-language-server",
 })
 
-require("blink.cmp").setup({
-	signature = { enabled = true },
-	completion = {
-		documentation = { auto_show = true, auto_show_delay_ms = 500 },
-		menu = {
-			auto_show = true,
-			draw = {
-				treesitter = { "lsp" },
-				columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
-			},
-		},
-	},
-	fuzzy = { implementation = "prefer_rust_with_warning" },
-})
+vim.cmd([[set completeopt+=menuone,noselect,popup]])
+
+-- vim.lsp.config("lua_ls", {
+-- 	settings = {
+-- 		Lua = {
+-- 			runtime = {
+-- 				version = "LuaJIT",
+-- 			},
+-- 			diagnostics = {
+-- 				globals = {
+-- 					"vim",
+-- 					"require",
+-- 				},
+-- 			},
+-- 			workspace = {
+-- 				library = vim.api.nvim_get_runtime_file("", true),
+-- 			},
+-- 			telemetry = {
+-- 				enable = false,
+-- 			},
+-- 		},
+-- 	},
+-- })
+
+-- require("blink.cmp").setup({
+-- 	signature = { enabled = true },
+-- 	completion = {
+-- 		documentation = { auto_show = true, auto_show_delay_ms = 500 },
+-- 		menu = {
+-- 			auto_show = true,
+-- 			draw = {
+-- 				treesitter = { "lsp" },
+-- 				columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
+-- 			},
+-- 		},
+-- 	},
+-- 	fuzzy = { implementation = "prefer_rust_with_warning" },
+-- })
 
 -- require("fzf-lua").setup({
 -- 	winopts = { backdrop = 85 },
