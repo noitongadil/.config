@@ -4,7 +4,7 @@ local config = wezterm.config_builder()
 
 config.font = wezterm.font("FiraMono Nerd Font")
 -- config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
-config.font_size = 28.6
+config.font_size = 22.8
 config.line_height = 1
 
 config.enable_tab_bar = false
