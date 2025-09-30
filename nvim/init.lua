@@ -33,14 +33,19 @@ opt.foldtext = ""
 opt.foldcolumn = "0"
 opt.fillchars:append({ fold = " " })
 opt.foldopen = ""
-opt.foldlevelstart = 99
+opt.foldlevelstart = 0
 
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
 
+vim.opt.list = true
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+opt.background = "dark"
+
 vim.pack.add({
-	{ src = "https://github.com/rose-pine/neovim" },
-	{ src = "https://github.com/vague2k/vague.nvim" },
+	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", priority = 1000 },
+	{ src = "https://github.com/rose-pine/neovim", priority = 1000 },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/Saghen/blink.cmp" },
@@ -48,83 +53,66 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/folke/zen-mode.nvim" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/jiaoshijie/undotree" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	-- { src = "https://github.com/lewis6991/gitsigns.nvim" },
 })
 
--- colors
-vim.api.nvim_create_autocmd("VimEnter", {
-	group = vim.api.nvim_create_augroup("ColorschemeLoad", { clear = true }),
-	callback = function()
-		require("vague").setup({
-			colors = {
-				bg = "#000000",
-				inactiveBg = "#000000",
-				fg = "#cdcdcd",
-				floatBorder = "#ffffff",
-				line = "#252530",
-				comment = "#606079",
-				builtin = "#b4d4cf",
-				func = "#c48282",
-				string = "#e8b589",
-				number = "#e0a363",
-				property = "#c3c3d5",
-				constant = "#aeaed1",
-				parameter = "#bb9dbd",
-				visual = "#333738",
-				error = "#d8647e",
-				warning = "#f3be7c",
-				hint = "#7e98e8",
-				operator = "#90a0b5",
-				keyword = "#6e94b2",
-				type = "#9bb4bc",
-				search = "#405065",
-				plus = "#7fa563",
-				delta = "#f3be7c",
-			},
-		})
-
-		vim.cmd.colorscheme("vague")
-		vim.cmd([[highlight! link WhichKeyBorder FloatBorder]])
-		vim.cmd([[highlight! link FzfLuaBorder   FloatBorder]])
-
-		require("rose-pine").setup({
-			variant = "moon",
-			palette = {
-				moon = {
-					rose = "#ebbcba",
-					gold = "#e0c797",
-					foam = "#b0c6d5",
-				},
-			},
-
-			enable = {
-				terminal = true,
-				legacy_highlights = false,
-				migrations = true,
-			},
-
-			styles = {
-				italic = false,
-				transparency = false,
-			},
-
-			highlight_groups = {
-				Comment = { fg = "muted" },
-				StatusLine = { fg = "subtle", bg = "muted", blend = 15 },
-				Background = { bg = "#000000" },
-				Normal = { bg = "#000000" },
-				NormalNC = { bg = "#000000" },
-				NormalFloat = { bg = "#000000" },
-				FloatBorder = { bg = "#000000" },
-			},
-		})
-	end,
+require("nvim-treesitter.configs").setup({
+	ensure_installed = { "c", "lua", "vim", "vimdoc", "query" }, -- Essential parsers
+	sync_install = true, -- Install parsers synchronously
+	auto_install = true, -- Optional: Auto-install missing parsers
+	highlight = { enable = true },
+	indent = { enable = true },
 })
 
-require("telescope").setup()
+function ColorMyPencils(color)
+	color = color or "rose-pine-moon"
+	vim.cmd.colorscheme(color)
+
+	vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
+
+	-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+	-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+	-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
+	-- vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
+end
+
+-- colors
+require("rose-pine").setup({
+	variant = "moon",
+	palette = {
+		moon = {
+			rose = "#ebbcba",
+			gold = "#e0c797",
+			foam = "#b0c6d5",
+		},
+	},
+
+	enable = {
+		terminal = true,
+		legacy_highlights = false,
+		migrations = true,
+	},
+
+	styles = {
+		italic = false,
+		transparency = false,
+	},
+
+	highlight_groups = {
+		Comment = { fg = "muted" },
+		StatusLine = { fg = "subtle", bg = "muted", blend = 15 },
+		Background = { bg = "#000000" },
+		Normal = { bg = "#000000" },
+		NormalNC = { bg = "#000000" },
+		NormalFloat = { bg = "#000000" },
+		FloatBorder = { bg = "#000000" },
+	},
+})
+ColorMyPencils()
+
+require("telescope").setup({})
 require("mason").setup({ ui = { border = "rounded" } })
 
 -- formatter
@@ -224,4 +212,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("n", "<leader>cr", function() vim.lsp.buf.rename() end, opts)
 	end,
 })
+
+local harpoon = require("harpoon")
+
+harpoon:setup()
+
+map("n", "<leader>a", function() harpoon:list():add() end)
+map("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+map("n", "<C-h>", function() harpoon:list():select(1) end)
+map("n", "<C-t>", function() harpoon:list():select(2) end)
+map("n", "<C-n>", function() harpoon:list():select(3) end)
+map("n", "<C-s>", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
+map("n", "<C-S-P>", function() harpoon:list():prev() end)
+map("n", "<C-S-N>", function() harpoon:list():next() end)
+
 -- stylua: ignore end
