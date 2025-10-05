@@ -45,29 +45,30 @@ vim.g.netrw_sort_by = "size"
 opt.background = "dark"
 
 vim.pack.add({
-	{ src = "https://github.com/folke/zen-mode.nvim" },
+	{ src = "https://github.com/chentoast/marks.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
+require("marks").setup({
+	builtin_marks = { "<", ">", "^" },
+	refresh_interval = 250,
+	sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
+	excluded_filetypes = {},
+	excluded_buftypes = {},
+	mappings = {},
+})
+
+
 function ColorMyPencils()
+	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "grey", bg = "grey" })
+	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
 	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
 end
-
 ColorMyPencils()
 
--- zen
-require("zen-mode").setup({
-	window = {
-		width = 100,
-		options = {},
-		border = "",
-	},
-})
-
--- formatter
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -89,7 +90,6 @@ vim.g.mapleader = " "
 -- stylua: ignore start
 map("n", "<Leader>ex", "<cmd>Ex %:p:h<CR>")
 map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
-map("n", "<leader>zz", function() require("zen-mode").toggle() end)
 map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
