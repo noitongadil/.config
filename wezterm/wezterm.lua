@@ -6,9 +6,17 @@ config.font = wezterm.font("ComicShannsMono Nerd Font Mono")
 -- config.font = wezterm.font("Unifont")
 -- config.font = wezterm.font("FiraMono Nerd Font Mono")
 -- config.font = wezterm.font("JetBrainsMonoNL Nerd Font Mono")
+config.cell_width = 1
+
+config.font_rules = {
+	{
+		intensity = "Bold",
+		font = wezterm.font("ComicShannsMono Nerd Font Mono")
+	},
+}
+
 config.font_size = 28.5
 config.line_height = 1
--- config.cell_width = 0.5
 
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
