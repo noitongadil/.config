@@ -1,0 +1,20 @@
+{
+  "plugins": {
+    "blink.cmp": [],
+    "conform.nvim": [],
+    "gitsigns.nvim": [],
+    "marks.nvim": [],
+    "mason.nvim": [],
+    "neovim": [],
+    "nvim-lspconfig": [],
+    "nvim-treesitter": {
+      "version": "'main'"
+    },
+    "plenary.nvim": [],
+    "telescope-fzf-native.nvim": [],
+    "telescope.nvim": {
+      "version": "'0.1.8'"
+    },
+    "zen-mode.nvim": []
+  }
+}

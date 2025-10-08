@@ -71,6 +71,7 @@ require("marks").setup({
 	mappings = {},
 })
 
+require("nvim-treesitter").setup()
 require("nvim-treesitter.configs").setup({
 	ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
 	sync_install = true,
@@ -79,19 +80,19 @@ require("nvim-treesitter.configs").setup({
 	indent = { enable = false },
 })
 
-function ColorMyPencils(color)
+local function ColorMyPencils(color)
 	color = color or "rose-pine-moon"
 	vim.cmd.colorscheme(color)
 
 	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#191724", bg = "#191724" })
 	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
 	vim.cmd([[highlight! link TelescopeNormal   Normal]])
-	-- vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
+	vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
 
-	-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-	-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-	-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
-	-- vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
+	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
+	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
 end
 
 -- colors
@@ -122,7 +123,7 @@ require("rose-pine").setup({
 		Background = { bg = "#000000" },
 		Normal = { bg = "#000000" },
 		NormalNC = { bg = "#000000" },
-		-- NormalFloat = { bg = "#000000" },
+		NormalFloat = { bg = "#000000" },
 		FloatBorder = { bg = "#000000" },
 	},
 })
@@ -234,6 +235,27 @@ local function pack_clean()
 	end
 end
 
+local function toggle_syntax()
+	if vim.g.syntax_on then
+		vim.cmd("TSDisable highlight")
+		vim.cmd("syntax off")
+
+		for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+			vim.api.nvim_set_hl(0, group, {})
+		end
+
+		vim.g.syntax_on = false
+		print("syntax off")
+	else
+		vim.cmd("syntax on")
+		vim.cmd("TSEnable highlight")
+        ColorMyPencils()
+
+		vim.g.syntax_on = true
+		print("syntax on")
+	end
+end
+
 local map = vim.keymap.set
 vim.g.mapleader = " "
 
@@ -244,6 +266,7 @@ map("n", "<leader>pc", pack_clean)
 map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
 map("n", "<leader>zz", function() require("zen-mode").toggle() end)
 map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
+map("n", "<leader>tc", toggle_syntax)
 
 local gitsigns = require("gitsigns")
 map("n", "<leader>hb", gitsigns.blame_line)

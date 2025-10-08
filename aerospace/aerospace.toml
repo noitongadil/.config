@@ -246,3 +246,6 @@ run = "move-node-to-workspace V"
 if.app-id = 'com.apple.iBooksX'
 run = "move-node-to-workspace N"
 
+[[on-window-detected]]
+if.app-id = 'com.utmapp.UTM'
+run = "move-node-to-workspace U"
