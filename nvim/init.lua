@@ -51,6 +51,15 @@ vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = "https://github.com/chentoast/marks.nvim" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/folke/zen-mode.nvim" },
+})
+
+require("zen-mode").setup({
+	window = {
+		width = 100,
+		options = {},
+		border = "",
+	},
 })
 
 require("marks").setup({
@@ -154,18 +163,13 @@ require("conform").setup({
 		luau = { "stylua" },
 		cpp = { "clang_format" },
 		c = { "clang_format" },
-		python = { "black" },
+		sh = { "shfmt" },
 	},
 
 	formatters = {
 		clang_format = {
 			command = "clang-format",
 			args = { "--style=file", "-fallback-style=Google" },
-		},
-		black = {
-			command = "black",
-			args = { "-" },
-			stdin = true,
 		},
 	},
 })
@@ -201,23 +205,58 @@ require("blink.cmp").setup({
 			},
 		},
 	},
+
 	fuzzy = { implementation = "prefer_rust_with_warning" },
 })
+
+local function pack_clean()
+	local active_plugins = {}
+	local unused_plugins = {}
+
+	for _, plugin in ipairs(vim.pack.get()) do
+		active_plugins[plugin.spec.name] = plugin.active
+	end
+
+	for _, plugin in ipairs(vim.pack.get()) do
+		if not active_plugins[plugin.spec.name] then
+			table.insert(unused_plugins, plugin.spec.name)
+		end
+	end
+
+	if #unused_plugins == 0 then
+		print("No unused plugins.")
+		return
+	end
+
+	local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
+	if choice == 1 then
+		vim.pack.del(unused_plugins)
+	end
+end
 
 local map = vim.keymap.set
 vim.g.mapleader = " "
 
 -- stylua: ignore start
 map("n", "<Leader>ex", "<cmd>Ex %:p:h<CR>")
+map("n", "<leader>pa", "<cmd>packadd present.nvim<CR>")
+map("n", "<leader>pc", pack_clean)
 map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
 map("n", "<leader>zz", function() require("zen-mode").toggle() end)
 map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
 
+local gitsigns = require("gitsigns")
+map("n", "<leader>hb", gitsigns.blame_line)
+map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
+
 local builtin = require("telescope.builtin")
 map("n", "<leader>ff", builtin.find_files)
 map("n", "<leader>fg", builtin.live_grep)
-map("n", "<leader>fb", builtin.buffers)
+map("n", "<leader><leader>", builtin.buffers)
 map("n", "<leader>fh", builtin.help_tags)
+map("n", "<leader>fb", builtin.builtin)
+map("n", "<leader>fm", builtin.man_pages)
+map("n", "<leader>fc", function() builtin.find_files({ cwd = vim.fn.stdpath("config") }) end)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "yanking highlight",
