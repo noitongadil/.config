@@ -71,6 +71,7 @@ require("marks").setup({
 	mappings = {},
 })
 
+require("mason").setup({ ui = { border = "rounded" } })
 require("nvim-treesitter").setup()
 require("nvim-treesitter.configs").setup({
 	ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
@@ -80,7 +81,7 @@ require("nvim-treesitter.configs").setup({
 	indent = { enable = false },
 })
 
-local function ColorMyPencils(color)
+local function color_my_pencils(color)
 	color = color or "rose-pine-moon"
 	vim.cmd.colorscheme(color)
 
@@ -93,6 +94,28 @@ local function ColorMyPencils(color)
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
+
+	vim.g.syntax_on = true
+end
+
+local function toggle_syntax()
+	if vim.g.syntax_on then
+		vim.cmd("TSDisable highlight")
+		vim.cmd("syntax off")
+
+		for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+			vim.api.nvim_set_hl(0, group, {})
+		end
+
+		vim.g.syntax_on = false
+		print("syntax off")
+	else
+		vim.cmd("syntax on")
+		vim.cmd("TSEnable highlight")
+
+		color_my_pencils()
+		print("syntax on")
+	end
 end
 
 -- colors
@@ -121,14 +144,11 @@ require("rose-pine").setup({
 		Comment = { fg = "muted" },
 		StatusLine = { fg = "subtle", bg = "#191724" },
 		Background = { bg = "#000000" },
-		Normal = { bg = "#000000" },
-		NormalNC = { bg = "#000000" },
-		NormalFloat = { bg = "#000000" },
-		FloatBorder = { bg = "#000000" },
 	},
 })
-ColorMyPencils()
+color_my_pencils()
 
+local actions = require("telescope.actions")
 require("telescope").setup({
 	extensions = {
 		fzf = {
@@ -140,9 +160,8 @@ require("telescope").setup({
 	},
 
 	defaults = {
-		color_devicons = true,
+		color_devicons = false,
 		sorting_strategy = "ascending",
-		-- borderchars = { "-", "|", "-", "|", "-", "+", "+", "|" },
 		borderchars = { "", "", "", "", "", "", "", "" },
 		path_displays = "smart",
 		layout_strategy = "horizontal",
@@ -152,11 +171,19 @@ require("telescope").setup({
 			prompt_position = "top",
 			preview_cutoff = 40,
 		},
+
+		mappings = {
+			i = {
+				["<c-d>"] = actions.delete_buffer,
+			},
+			n = {
+				["<c-d>"] = actions.delete_buffer,
+				["dd"] = actions.delete_buffer,
+			},
+		},
 	},
 })
 require("telescope").load_extension("fzf")
-
-require("mason").setup({ ui = { border = "rounded" } })
 
 require("conform").setup({
 	formatters_by_ft = {
@@ -232,27 +259,6 @@ local function pack_clean()
 	local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
 	if choice == 1 then
 		vim.pack.del(unused_plugins)
-	end
-end
-
-local function toggle_syntax()
-	if vim.g.syntax_on then
-		vim.cmd("TSDisable highlight")
-		vim.cmd("syntax off")
-
-		for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
-			vim.api.nvim_set_hl(0, group, {})
-		end
-
-		vim.g.syntax_on = false
-		print("syntax off")
-	else
-		vim.cmd("syntax on")
-		vim.cmd("TSEnable highlight")
-        ColorMyPencils()
-
-		vim.g.syntax_on = true
-		print("syntax on")
 	end
 end
 
