@@ -36,6 +36,8 @@ opt.foldlevelstart = 0
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
+opt.laststatus = 1
+
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
 
@@ -281,10 +283,10 @@ map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
 local builtin = require("telescope.builtin")
 map("n", "<leader>ff", builtin.find_files)
 map("n", "<leader>fg", builtin.live_grep)
-map("n", "<leader><leader>", builtin.buffers)
 map("n", "<leader>fh", builtin.help_tags)
 map("n", "<leader>fb", builtin.builtin)
 map("n", "<leader>fm", builtin.man_pages)
+map("n", "<leader><leader>", builtin.buffers)
 map("n", "<leader>fc", function() builtin.find_files({ cwd = vim.fn.stdpath("config") }) end)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
