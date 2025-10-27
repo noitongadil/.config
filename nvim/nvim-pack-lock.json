@@ -3,7 +3,6 @@
     "blink.cmp": [],
     "conform.nvim": [],
     "gitsigns.nvim": [],
-    "marks.nvim": [],
     "mason.nvim": [],
     "neovim": [],
     "nvim-lspconfig": [],
@@ -15,6 +14,7 @@
     "telescope.nvim": {
       "version": "'0.1.8'"
     },
+    "vague.nvim": [],
     "zen-mode.nvim": []
   }
 }

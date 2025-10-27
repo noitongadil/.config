@@ -1,2 +1,6 @@
 old-vim/
 nvim/pack
+nvim/nvim-pack-lock.json
+nvim/.luarc.json
+vir/.luarc.json
+vir/nvim-pack-lock.json

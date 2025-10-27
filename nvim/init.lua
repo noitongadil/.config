@@ -1,5 +1,5 @@
 local opt = vim.opt
-opt.guicursor = ""
+-- opt.guicursor = ""
 opt.signcolumn = "yes"
 opt.colorcolumn = "80"
 opt.termguicolors = true
@@ -51,26 +51,9 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
-	{ src = "https://github.com/chentoast/marks.nvim" },
+	-- { src = "https://github.com/chentoast/marks.nvim" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/folke/zen-mode.nvim" },
-})
-
-require("zen-mode").setup({
-	window = {
-		width = 100,
-		options = {},
-		border = "",
-	},
-})
-
-require("marks").setup({
-	builtin_marks = { "<", ">", "^" },
-	refresh_interval = 250,
-	sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
-	excluded_filetypes = {},
-	excluded_buftypes = {},
-	mappings = {},
+	{ src = "https://github.com/vague-theme/vague.nvim" },
 })
 
 require("mason").setup({ ui = { border = "rounded" } })
@@ -148,7 +131,15 @@ require("rose-pine").setup({
 		Background = { bg = "#000000" },
 	},
 })
-color_my_pencils()
+
+require("vague").setup({
+	bold = true,
+	italic = false,
+	colors = {
+		bg = "#000000",
+	},
+})
+color_my_pencils("vague")
 
 local actions = require("telescope.actions")
 require("telescope").setup({
@@ -272,14 +263,21 @@ map("n", "<Leader>ex", "<cmd>Ex %:p:h<CR>")
 map("n", "<leader>pa", "<cmd>packadd present.nvim<CR>")
 map("n", "<leader>pc", pack_clean)
 map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
-map("n", "<leader>zz", function() require("zen-mode").toggle() end)
 map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
 map("n", "<leader>tc", toggle_syntax)
-map("n", "<leader>w", "<Cmd>:w<CR>")
+map("n", "<leader>w", "<Cmd>:update<CR>")
 map("n", "<leader>q", "<Cmd>:quit<CR>")
 map("n", "<leader>Q", "<Cmd>:wqa<CR>")
 map({ "n", "v", "x" }, ";", ":")
 map({ "n", "v", "x" }, ":", ";")
+
+-- harpoon replacement
+map("n", "<leader>a", function() vim.cmd("argadd %") vim.cmd("argdedup") end)
+map("n", "<leader>e", function() vim.cmd.args() end)
+map("n", "<C-h>", function() vim.cmd("silent! 1argument") end)
+map("n", "<C-j>", function() vim.cmd("silent! 2argument") end)
+map("n", "<C-k>", function() vim.cmd("silent! 3argument") end)
+map("n", "<C-l>", function() vim.cmd("silent! 4argument") end)
 
 local gitsigns = require("gitsigns")
 map("n", "<leader>hb", gitsigns.blame_line)

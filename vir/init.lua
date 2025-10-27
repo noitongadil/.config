@@ -2,7 +2,7 @@ local opt = vim.opt
 
 vim.cmd([[syntax off]])
 
-opt.guicursor = ""
+-- opt.guicursor = ""
 opt.colorcolumn = "80"
 opt.signcolumn = "yes"
 opt.termguicolors = true
@@ -45,57 +45,8 @@ vim.g.netrw_sort_by = "size"
 opt.background = "dark"
 
 vim.pack.add({
-	{ src = "https://github.com/chentoast/marks.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
-	{ src = "https://github.com/folke/zen-mode.nvim" },
-	{ src = "https://github.com/nvim-telescope/telescope.nvim", version = "0.1.8" },
-	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 })
-
-require("marks").setup({
-	builtin_marks = { "<", ">", "^" },
-	refresh_interval = 250,
-	sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
-	excluded_filetypes = {},
-	excluded_buftypes = {},
-	mappings = {},
-})
-
-require("zen-mode").setup({
-	window = {
-		width = 100,
-		options = {},
-		border = "",
-	},
-})
-
-require("telescope").setup({
-	extensions = {
-		fzf = {
-			fuzzy = true,
-			override_generic_sorter = true,
-			override_file_sorter = true,
-			case_mode = "smart_case",
-		},
-	},
-
-	defaults = {
-		color_devicons = true,
-		sorting_strategy = "ascending",
-		-- borderchars = { "-", "|", "-", "|", "-", "+", "+", "|" },
-		borderchars = { "", "", "", "", "", "", "", "" },
-		path_displays = "smart",
-		layout_strategy = "horizontal",
-		layout_config = {
-			height = 100,
-			width = 400,
-			prompt_position = "top",
-			preview_cutoff = 40,
-		},
-	},
-})
-require("telescope").load_extension("fzf")
 
 function ColorMyPencils()
 	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "grey", bg = "grey" })
@@ -122,23 +73,53 @@ require("conform").setup({
 	},
 })
 
+local function pack_clean()
+	local active_plugins = {}
+	local unused_plugins = {}
+
+	for _, plugin in ipairs(vim.pack.get()) do
+		active_plugins[plugin.spec.name] = plugin.active
+	end
+
+	for _, plugin in ipairs(vim.pack.get()) do
+		if not active_plugins[plugin.spec.name] then
+			table.insert(unused_plugins, plugin.spec.name)
+		end
+	end
+
+	if #unused_plugins == 0 then
+		print("No unused plugins.")
+		return
+	end
+
+	local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
+	if choice == 1 then
+		vim.pack.del(unused_plugins)
+	end
+end
+
 local map = vim.keymap.set
 vim.g.mapleader = " "
 
 -- stylua: ignore start
 map("n", "<Leader>ex", "<cmd>Ex %:p:h<CR>")
+map("n", "<leader>pa", "<cmd>packadd present.nvim<CR>")
+map("n", "<leader>pc", pack_clean)
 map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
 map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
-map("n", "<leader>zz", function() require("zen-mode").toggle() end)
+map("n", "<leader>w", "<Cmd>:update<CR>")
+map("n", "<leader>q", "<Cmd>:quit<CR>")
+map("n", "<leader>Q", "<Cmd>:wqa<CR>")
+map({ "n", "v", "x" }, ";", ":")
+map({ "n", "v", "x" }, ":", ";")
 
-local builtin = require("telescope.builtin")
-map("n", "<leader>ff", builtin.find_files)
-map("n", "<leader>fg", builtin.live_grep)
-map("n", "<leader><leader>", builtin.buffers)
-map("n", "<leader>fh", builtin.help_tags)
-map("n", "<leader>fb", builtin.builtin)
-map("n", "<leader>fm", builtin.man_pages)
-map("n", "<leader>fc", function() builtin.find_files({ cwd = vim.fn.stdpath("config") }) end)
+-- harpoon replacement
+map("n", "<leader>a", function() vim.cmd("argadd %") vim.cmd("argdedup") end)
+map("n", "<leader>e", function() vim.cmd.args() end)
+map("n", "<C-h>", function() vim.cmd("silent! 1argument") end)
+map("n", "<C-j>", function() vim.cmd("silent! 2argument") end)
+map("n", "<C-k>", function() vim.cmd("silent! 3argument") end)
+map("n", "<C-l>", function() vim.cmd("silent! 4argument") end)
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "yanking highlight",
