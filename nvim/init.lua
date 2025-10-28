@@ -1,5 +1,9 @@
 local opt = vim.opt
+
+vim.cmd([[set statusline=%<%f\ %h%m%r%=%-13a%-13.(%l,%c%V%)\ %P]])
+
 -- opt.guicursor = ""
+opt.gcr = "n-v-c-sm:block,i-ci-ve:ver25,t:block-TermCursor"
 opt.signcolumn = "yes"
 opt.colorcolumn = "80"
 opt.termguicolors = true
@@ -36,7 +40,7 @@ opt.foldlevelstart = 0
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
-opt.laststatus = 1
+opt.laststatus = 2
 
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
@@ -54,6 +58,7 @@ vim.pack.add({
 	-- { src = "https://github.com/chentoast/marks.nvim" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
 	{ src = "https://github.com/vague-theme/vague.nvim" },
+	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 })
 
 require("mason").setup({ ui = { border = "rounded" } })
@@ -70,11 +75,12 @@ local function color_my_pencils(color)
 	color = color or "rose-pine-moon"
 	vim.cmd.colorscheme(color)
 
-	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#191724", bg = "#191724" })
+	-- vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#1c1c24", bg = "#1c1c24" })
 	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
 	vim.cmd([[highlight! link TelescopeNormal   Normal]])
 	vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
 
+	-- vim.api.nvim_set_hl(0, "StatusLine", { fg = "#cdcdcd", bg = "#000000" })
 	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
@@ -127,7 +133,6 @@ require("rose-pine").setup({
 
 	highlight_groups = {
 		Comment = { fg = "muted" },
-		StatusLine = { fg = "subtle", bg = "#191724" },
 		Background = { bg = "#000000" },
 	},
 })
@@ -135,6 +140,7 @@ require("rose-pine").setup({
 require("vague").setup({
 	bold = true,
 	italic = false,
+
 	colors = {
 		bg = "#000000",
 	},
@@ -212,6 +218,7 @@ vim.lsp.enable({
 	"pyright",
 	"stylua",
 	"cmake-language-server",
+	"rust-analyzer",
 })
 
 require("blink.cmp").setup({
@@ -231,16 +238,15 @@ require("blink.cmp").setup({
 })
 
 local function pack_clean()
-	local active_plugins = {}
 	local unused_plugins = {}
 
 	for _, plugin in ipairs(vim.pack.get()) do
-		active_plugins[plugin.spec.name] = plugin.active
-	end
-
-	for _, plugin in ipairs(vim.pack.get()) do
-		if not active_plugins[plugin.spec.name] then
-			table.insert(unused_plugins, plugin.spec.name)
+		if plugin.spec and plugin.spec.name then
+			if not plugin.active then
+				table.insert(unused_plugins, plugin.spec.name)
+			end
+		else
+			vim.notify("Found malformed plugin at: " .. (plugin.path or "Unknown path"), vim.log.levels.WARN)
 		end
 	end
 
@@ -252,6 +258,7 @@ local function pack_clean()
 	local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
 	if choice == 1 then
 		vim.pack.del(unused_plugins)
+		vim.notify("Unused plugins removed.", vim.log.levels.INFO)
 	end
 end
 
@@ -273,7 +280,7 @@ map({ "n", "v", "x" }, ":", ";")
 
 -- harpoon replacement
 map("n", "<leader>a", function() vim.cmd("argadd %") vim.cmd("argdedup") end)
-map("n", "<leader>e", function() vim.cmd.args() end)
+map("n", "<leader>l", function() vim.cmd.args() end)
 map("n", "<C-h>", function() vim.cmd("silent! 1argument") end)
 map("n", "<C-j>", function() vim.cmd("silent! 2argument") end)
 map("n", "<C-k>", function() vim.cmd("silent! 3argument") end)

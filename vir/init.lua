@@ -43,20 +43,23 @@ vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
 
 opt.background = "dark"
+opt.laststatus = 2
 
 vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
-function ColorMyPencils()
-	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "grey", bg = "grey" })
+local function color_my_pencils()
+	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#141415", bg = "#141415" })
 	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
+
+	vim.api.nvim_set_hl(0, "StatusLine", { fg = "#cdcdcd", bg = "#141415", })
 	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
 	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
 end
-ColorMyPencils()
+color_my_pencils()
 
 require("conform").setup({
 	formatters_by_ft = {

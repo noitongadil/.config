@@ -10,11 +10,14 @@
       "version": "'main'"
     },
     "plenary.nvim": [],
+    "rustaceanvim": {
+      "rev": "be0d1d1",
+      "src": "https://github.com/mrcjkb/rustaceanvim"
+    },
     "telescope-fzf-native.nvim": [],
     "telescope.nvim": {
       "version": "'0.1.8'"
     },
-    "vague.nvim": [],
-    "zen-mode.nvim": []
+    "vague.nvim": []
   }
 }
