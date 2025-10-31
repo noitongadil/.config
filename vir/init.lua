@@ -1,8 +1,7 @@
 local opt = vim.opt
 
-vim.cmd([[syntax off]])
-
--- opt.guicursor = ""
+opt.guicursor = ""
+-- opt.gcr = "n-v-c-sm:block,i-ci-ve:ver25,t:block-TermCursor"
 opt.colorcolumn = "80"
 opt.signcolumn = "yes"
 opt.termguicolors = true
@@ -27,7 +26,6 @@ opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 opt.undofile = true
 opt.swapfile = false
 opt.clipboard = "unnamed"
-opt.completeopt = { "menuone", "popup", "noinsert" }
 
 opt.foldenable = true
 opt.foldlevel = 99
@@ -36,8 +34,12 @@ opt.foldcolumn = "0"
 opt.foldopen = ""
 opt.foldlevelstart = 0
 
-vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+opt.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+vim.api.nvim_set_hl(0, "NonText", { bg = "NONE" })
+vim.api.nvim_set_hl(0, "Folded", { bg = "none", bold = true })
+vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 
 vim.g.netrw_liststyle = 1
 vim.g.netrw_sort_by = "size"
@@ -46,70 +48,20 @@ opt.background = "dark"
 opt.laststatus = 2
 
 vim.pack.add({
-	{ src = "https://github.com/stevearc/conform.nvim" },
+	{ src = "https://github.com/vague-theme/vague.nvim" },
 })
 
-local function color_my_pencils()
-	vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#141415", bg = "#141415" })
-	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
-
-	vim.api.nvim_set_hl(0, "StatusLine", { fg = "#cdcdcd", bg = "#141415", })
-	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
-end
-color_my_pencils()
-
-require("conform").setup({
-	formatters_by_ft = {
-		lua = { "stylua" },
-		cpp = { "clang_format" },
-		c = { "clang_format" },
-	},
-
-	formatters = {
-		clang_format = {
-			command = "clang-format",
-			args = { "--style=file", "-fallback-style=Google" },
-		},
-	},
+require("vague").setup({
+    italic = false,
+    transparent = true,
 })
 
-local function pack_clean()
-	local active_plugins = {}
-	local unused_plugins = {}
-
-	for _, plugin in ipairs(vim.pack.get()) do
-		active_plugins[plugin.spec.name] = plugin.active
-	end
-
-	for _, plugin in ipairs(vim.pack.get()) do
-		if not active_plugins[plugin.spec.name] then
-			table.insert(unused_plugins, plugin.spec.name)
-		end
-	end
-
-	if #unused_plugins == 0 then
-		print("No unused plugins.")
-		return
-	end
-
-	local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
-	if choice == 1 then
-		vim.pack.del(unused_plugins)
-	end
-end
+vim.cmd.colorscheme("vague")
 
 local map = vim.keymap.set
 vim.g.mapleader = " "
 
--- stylua: ignore start
 map("n", "<Leader>ex", "<cmd>Ex %:p:h<CR>")
-map("n", "<leader>pa", "<cmd>packadd present.nvim<CR>")
-map("n", "<leader>pc", pack_clean)
-map("n", "<leader>ps", "<cmd>lua vim.pack.update()<CR>")
-map("n", "<leader>cf", function() require("conform").format({ lsp_format = false }) end)
 map("n", "<leader>w", "<Cmd>:update<CR>")
 map("n", "<leader>q", "<Cmd>:quit<CR>")
 map("n", "<leader>Q", "<Cmd>:wqa<CR>")
@@ -123,12 +75,3 @@ map("n", "<C-h>", function() vim.cmd("silent! 1argument") end)
 map("n", "<C-j>", function() vim.cmd("silent! 2argument") end)
 map("n", "<C-k>", function() vim.cmd("silent! 3argument") end)
 map("n", "<C-l>", function() vim.cmd("silent! 4argument") end)
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "yanking highlight",
-	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-})
--- stylua: ignore end

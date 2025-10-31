@@ -61,30 +61,21 @@ vim.pack.add({
 	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 })
 
-require("mason").setup({ ui = { border = "rounded" } })
-require("nvim-treesitter").setup()
-require("nvim-treesitter.configs").setup({
-	ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
-	sync_install = true,
-	auto_install = true,
-	highlight = { enable = true },
-	indent = { enable = false },
-})
-
 local function color_my_pencils(color)
 	color = color or "rose-pine-moon"
 	vim.cmd.colorscheme(color)
 
-	-- vim.api.nvim_set_hl(0, "ColorColumn", { fg = "#1c1c24", bg = "#1c1c24" })
 	vim.api.nvim_set_hl(0, "Folded", { fg = "#6e6a86", bg = "none", bold = true })
-	vim.cmd([[highlight! link TelescopeNormal   Normal]])
-	vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
 
-	-- vim.api.nvim_set_hl(0, "StatusLine", { fg = "#cdcdcd", bg = "#000000" })
-	vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
-	vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
+	if color == "rose-pine-moon" and color.transparency == false then
+		vim.cmd([[highlight! link TelescopeNormal   Normal]])
+		vim.cmd([[highlight! link TelescopeBorder   FloatBorder]])
+
+		vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+		vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#000000" })
+		vim.api.nvim_set_hl(0, "NormalNC", { bg = "#000000" })
+	end
 
 	vim.g.syntax_on = true
 end
@@ -128,24 +119,31 @@ require("rose-pine").setup({
 
 	styles = {
 		italic = false,
-		transparency = false,
+		transparency = true,
 	},
 
 	highlight_groups = {
 		Comment = { fg = "muted" },
-		Background = { bg = "#000000" },
+		-- Background = { bg = "#000000" },
 	},
 })
 
 require("vague").setup({
 	bold = true,
 	italic = false,
-
-	colors = {
-		bg = "#000000",
-	},
+	transparent = true,
 })
 color_my_pencils("vague")
+
+require("mason").setup({ ui = { border = "single" } })
+require("nvim-treesitter").setup()
+require("nvim-treesitter.configs").setup({
+	ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+	sync_install = true,
+	auto_install = true,
+	highlight = { enable = true },
+	indent = { enable = false },
+})
 
 local actions = require("telescope.actions")
 require("telescope").setup({
@@ -161,7 +159,17 @@ require("telescope").setup({
 	defaults = {
 		color_devicons = false,
 		sorting_strategy = "ascending",
-		borderchars = { "", "", "", "", "", "", "", "" },
+		-- borderchars = { "", "", "", "", "", "", "", "" },
+		borderchars = {
+			"─", -- top
+			"│", -- right
+			"─", -- bottom
+			"│", -- left
+			"┌", -- top-left
+			"┐", -- top-right
+			"┘", -- bottom-right
+			"└", -- bottom-left
+		},
 		path_displays = "smart",
 		layout_strategy = "horizontal",
 		layout_config = {
@@ -314,8 +322,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local opts = { buffer = e.buf }
 		map("n", "gd", function() vim.lsp.buf.definition() end, opts)
 		map("n", "gD", function() vim.lsp.buf.declaration() end, opts)
-		map("n", "gl", function() vim.diagnostic.open_float({ border = "rounded" }) end, opts)
-		map("n", "K", function() vim.lsp.buf.hover({ border = "rounded" }) end, opts)
+		map("n", "gl", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
+		map("n", "K", function() vim.lsp.buf.hover({ border = "single" }) end, opts)
 		map("n", "<leader>gi", function() vim.lsp.buf.implementation() end, opts)
 		map("n", "<leader>sw", function() vim.lsp.buf.workspace_symbol() end, opts)
 		map("n", "<leader>ca", function() vim.lsp.buf.code_action() end, opts)
